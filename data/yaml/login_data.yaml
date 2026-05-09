@@ -1,0 +1,91 @@
+-
+  id: login_001
+  title: 登录成功
+  method: POST
+  url: /login
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    principal: lemon_python
+    credentials: 12345678
+    appType: 3
+    loginType: 0
+  assertion:
+    $..nickName: lemon_python
+    $..enabled: true
+  presql:
+  extract_data:
+
+-
+  id: login_002
+  title: 登录异常-用户名为空
+  method: POST
+  url: /login
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    principal:
+    credentials: 12345678
+    appType: 3
+    loginType: 0
+  assertion:
+    text: "账号或密码不正确"
+  presql: ~
+  extract_data: ~
+  assert_db: ~
+-
+  id: login_003
+  title: 登录异常-用户名长度异常【小于4】
+  method: POST
+  url: /login
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    principal: lem
+    credentials: 12345678
+    appType: 3
+    loginType: 0
+  assertion:
+    text: "账号或密码不正确"
+  presql: ~
+  extract_data: ~
+  assert_db: ~
+-
+  id: login_004
+  title: 登录异常-用户名长度异常【大于16】
+  method: POST
+  url: /login
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    principal: lemon_autoXXXXXXXXXXXXXXXXX
+    credentials: 12345678
+    appType: 3
+    loginType: 0
+  assertion:
+    text: "账号或密码不正确"
+  presql: ~
+  extract_data: ~
+  assert_db: ~
+-
+  id: login_005
+  title: 登录异常-用户名未注册
+  method: POST
+  url: /login
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    principal: lemon_autoxx
+    credentials: 12345678
+    appType: 3
+    loginType: 0
+  assertion:
+    text: "账号或密码不正确"
+  presql: ~
+  extract_data: ~
+  assert_db: ~

@@ -1,0 +1,71 @@
+-
+  id: login_001
+  title: 登录成功
+  method: POST
+  url: /login
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    principal: lemon_python
+    credentials: 12345678
+    appType: 3
+    loginType: 0
+  assertion:
+    $..nickName: lemon_python
+    $..enabled: true
+  extract_data:
+    access_token: $..access_token
+    token_type: $..token_type
+  presql: ~
+  assert_db: ~
+
+-
+  id: 002_进入到个人中心
+  title: 进入到个人中心
+  method: GET
+  url: /p/user/centerInfo
+  header:
+    Accept-Language: zh
+    Authorization: ${token_type}${access_token}
+  param: ~
+  assertion: ~
+  presql: ~
+  extract_data: ~
+  assert_db: ~
+-
+  id: 003_上传图片
+  title: 上传图片
+  method: POST
+  url: /p/file/upload
+  header:
+    Content-Type: multipart/form-data
+    Accept-Language: zh
+    Authorization: ${token_type}${access_token}
+  param: ~
+  assertion: ~
+  presql:
+  extract_data:
+    resourcesUrl: $..resourcesUrl
+    filePath: $..filePath
+  assert_db:
+    select count(1) from tz_attach_file where file_path = '${filePath}': 1
+
+-
+  id: 004_保存用户信息
+  title: 保存用户信息
+  method: PUT
+  url: /p/user/setUserInfo
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+    Authorization: ${token_type}${access_token}
+  param:
+    avatarUrl: ${resourcesUrl}${filePath}
+    nickName: lemon_python
+    userMobile: 13552460188
+    auth: {}
+  assertion: ~
+  presql: ~
+  extract_data: ~
+  assert_db: ~

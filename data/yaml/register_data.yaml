@@ -1,0 +1,53 @@
+-
+  id: register_001
+  title: 发送注册短信验证码
+  method: PUT
+  url: /user/sendRegisterSms
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    mobile: ${gen_unregister_phone()}
+  assertion:
+  presql:
+  extract_data:
+  assert_db:
+-
+  id: register_002
+  title: 发送校验注册短信验证码
+  method: PUT
+  url: /user/checkRegisterSms
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    mobile: ${gen_unregister_phone}
+    validCode: ${mobile_code}
+  assertion:
+  presql:
+    mobile_code: select mobile_code  from tz_sms_log where user_phone='${gen_unregister_phone}' order by rec_date desc limit 1;
+  extract_data:
+    check_code: text
+  assert_db:
+-
+  id: register_003
+  title: 注册接口请求
+  method: PUT
+  url: /user/registerOrBindUser
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    appType: 3
+    checkRegisterSmsFlag: ${check_code}
+    mobile: ${gen_unregister_phone}
+    userName: ${gen_unregister_name()}
+    password: 123456
+    registerOrBind: 1
+    validateType: 1
+  assertion:
+    $..nickName: ${gen_unregister_name}
+    $..enabled: true
+  presql:
+  extract_data:
+  assert_db:

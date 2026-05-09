@@ -1,0 +1,125 @@
+-
+  id: login_001
+  title: 登录成功
+  method: POST
+  url: /login
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+  param:
+    principal: lemon_python
+    credentials: 12345678
+    appType: 3
+    loginType: 0
+  assertion:
+    $..nickName: lemon_python
+    $..enabled: true
+  presql:
+  extract_data:
+    access_token: $..access_token
+    token_type: $..token_type
+  assert_db:
+-
+  id: 002_搜索
+  title: 搜真皮圆筒包
+  method: GET
+  url: /search/searchProdPage
+  header:
+  param:
+    prodName: 真皮圆筒包
+  assertion:
+  presql:
+  extract_data:
+    prodId: $..prodId
+  assert_db:
+-
+  id: 003_进入商品详情页
+  title: 进入商品详情页
+  method: GET
+  url: /prod/prodInfo
+  header:
+  param:
+    prodId: ${prodId}
+  assertion:
+  presql:
+  extract_data:
+    skuId: $..skuId
+  assert_db:
+-
+  id: 004_添加到购物车
+  title: 添加到购物车
+  method: POST
+  url: /p/shopCart/changeItem
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+    Authorization: ${token_type}${access_token}
+  param:
+    basketId: 0
+    count: 1
+    prodId: ${prodId}
+    shopId: 1
+    skuId: ${skuId}
+  assertion:
+  presql:
+  extract_data:
+  assert_db:
+-
+  id: 005_查询购物车信息
+  title: 查询购物车信息
+  method: POST
+  url: /p/shopCart/info
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+    Authorization: ${token_type}${access_token}
+  param: []
+  assertion:
+  presql:
+  extract_data:
+    basketId: $..basketId
+  assert_db:
+-
+  id: 006_结算商品
+  title: 结算商品
+  method: POST
+  url: /p/order/confirm
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+    Authorization: ${token_type}${access_token}
+  param:
+    addrId: 0
+    basketIds:
+      -
+        ${basketId}
+    couponIds: []
+    isScorePay: 0
+    userChangeCoupon: 0
+    userUseScore: 0
+  assertion:
+  presql:
+  extract_data:
+  assert_db:
+-
+  id: 007_提交订单
+  title: 提交订单
+  method: POST
+  url: /p/order/submit
+  header:
+    Content-Type: application/json
+    Accept-Language: zh
+    Authorization: ${token_type}${access_token}
+  param:
+    orderShopParam:
+      -
+        remarks: ""
+        shopId: 1
+  assertion:
+    $..duplicateError: null
+  presql:
+  extract_data:
+    orderNumbers: $..orderNumbers
+  assert_db:
+    select count(1) from tz_order where order_number = '${orderNumbers}': 1
+    select status from tz_order where order_number = '${orderNumbers}': 1
